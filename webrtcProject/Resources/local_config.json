@@ -1,0 +1,137 @@
+{
+    "сountryNumbers": [
+        {
+            "name": "Ukraine",
+            "flag": "🇺🇦",
+            "code": "UA",
+            "dial_code": "+380",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Belarus",
+            "flag": "🇧🇾",
+            "code": "BY",
+            "dial_code": "+375",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Poland",
+            "flag": "🇵🇱",
+            "code": "PL",
+            "dial_code": "+48",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Slovakia",
+            "flag": "🇸🇰",
+            "code": "SK",
+            "dial_code": "+421",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Czech Republic",
+            "flag": "🇨🇿",
+            "code": "CZ",
+            "dial_code": "+420",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Romania",
+            "flag": "🇷🇴",
+            "code": "RO",
+            "dial_code": "+40",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Moldova",
+            "flag": "🇲🇩",
+            "code": "MD",
+            "dial_code": "+373",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Bulgaria",
+            "flag": "🇧🇬",
+            "code": "BG",
+            "dial_code": "+359",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Serbia",
+            "flag": "🇷🇸",
+            "code": "RS",
+            "dial_code": "+381",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Croatia",
+            "flag": "🇭🇷",
+            "code": "HR",
+            "dial_code": "+385",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "Germany",
+            "flag": "🇩🇪",
+            "code": "DE",
+            "dial_code": "+49",
+            "pattern": "(##) ### ## ##"
+        },
+        {
+            "name": "France",
+            "flag": "🇫🇷",
+            "code": "FR",
+            "dial_code": "+33",
+            "pattern": "## ## ## ## ##"
+        },
+        {
+            "name": "Italy",
+            "flag": "🇮🇹",
+            "code": "IT",
+            "dial_code": "+39",
+            "pattern": "## ### ## ## ##"
+        },
+        {
+            "name": "Spain",
+            "flag": "🇪🇸",
+            "code": "ES",
+            "dial_code": "+34",
+            "pattern": "## ### ## ## ##"
+        },
+        {
+            "name": "Portugal",
+            "flag": "🇵🇹",
+            "code": "PT",
+            "dial_code": "+351",
+            "pattern": "## ### ## ##"
+        },
+        {
+            "name": "United Kingdom",
+            "flag": "🇬🇧",
+            "code": "GB",
+            "dial_code": "+44",
+            "pattern": "(##) #### ####"
+        },
+        {
+            "name": "Ireland",
+            "flag": "🇮🇪",
+            "code": "IE",
+            "dial_code": "+353",
+            "pattern": "## ### ####"
+        },
+        {
+            "name": "Netherlands",
+            "flag": "🇳🇱",
+            "code": "NL",
+            "dial_code": "+31",
+            "pattern": "## ### ####"
+        },
+        {
+            "name": "Belgium",
+            "flag": "🇧🇪",
+            "code": "BE",
+            "dial_code": "+32",
+            "pattern": "## ## ## ##"
+        }
+    ]
+}

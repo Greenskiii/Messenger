@@ -1,0 +1,19 @@
+input_dir: ${PROJECT_DIR}/webrtcProject/Design
+output_dir: ${PROJECT_DIR}/webrtcProject/Design
+
+xcassets:
+  inputs:
+    - Icons.xcassets
+    - Colors.xcassets
+  outputs:
+    - templateName: swift5
+      params:
+        publicAccess: true
+      output: Assets.swift
+
+fonts:
+  inputs:
+    - Fonts
+  outputs:
+    - templateName: swift5
+      output: Fonts.swift
