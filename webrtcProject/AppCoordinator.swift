@@ -7,10 +7,12 @@
 
 import XCoordinator
 import UIKit
+import CommonLogic
+import Onboarding
 
 enum AppRoute: Route {
     case loading
-    case onboarding
+    case onboarding(_ initialRoute: OnboardingRoute = .openSplash)
     case home
     case flowFinished
 }
@@ -24,6 +26,7 @@ private class AppNavigationController: UINavigationController {
 class AppCoordinator: NavigationCoordinator<AppRoute> {
     private let remoteConfigManager = RemoteConfigManager()
     private let authManager = AuthManager()
+    private let profileManager = ProfileManager()
 
     init(window: UIWindow) {
         let appNavigationController = AppNavigationController()
@@ -35,32 +38,39 @@ class AppCoordinator: NavigationCoordinator<AppRoute> {
         switch route {
         case .loading:
             let coordinator = LoadingCoordinator(
+                profileManager: profileManager,
                 remoteConfigManager: remoteConfigManager
             ) { [weak self] route in
                 switch route {
-                case .openOnboarding:
-                    self?.trigger(.onboarding)
+                case .openOnboarding(let initialRoute):
+                    self?.trigger(.onboarding(initialRoute))
                 case .openHome:
                     self?.trigger(.home)
                 }
             }
             return .set([coordinator])
-        case .onboarding:
+        case .onboarding(let initialRoute):
             let coordinator = OnboardingCoordinator(
                 remoteConfigManager: remoteConfigManager,
                 authManager: authManager,
-                initialRoute: .openSplash
+                profileManager: profileManager,
+                initialRoute: initialRoute
             ) { [weak self] route in
-                if route == .flowFinished {
-                    self?.trigger(.home)
+                if route == .openHome {
+                    self?.trigger(.flowFinished) {
+                        self?.trigger(.home)
+                    }
                 }
             }
             coordinator.rootViewController.modalPresentationStyle = .fullScreen
             return .present(coordinator)
         case .home:
-            return .none()
+            let coordinator = HomeCoordinator(profileManager: profileManager) { [weak self] route in
+                self?.trigger(.flowFinished)
+            }
+            return .set([coordinator])
         case .flowFinished:
-            return .none()
+            return .dismiss()
         }
     }
 }

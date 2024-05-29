@@ -1,5 +1,5 @@
-input_dir: ${PROJECT_DIR}/webrtcProject/Design
-output_dir: ${PROJECT_DIR}/webrtcProject/Design
+input_dir: ${PROJECT_DIR}/Modules/Design/Sources/Design
+output_dir: ${PROJECT_DIR}/Modules/Design/Sources/Design
 
 xcassets:
   inputs:
@@ -16,4 +16,6 @@ fonts:
     - Fonts
   outputs:
     - templateName: swift5
+      params:
+        publicAccess: true
       output: Fonts.swift

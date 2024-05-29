@@ -6,9 +6,9 @@
 //
 
 import UIKit
+import Design
 
 final class LoadingViewController: UIViewController {
-
     var domainModel: LoadingDomainModel!
 
     private let activityIndicator: UIActivityIndicatorView = {
@@ -20,7 +20,7 @@ final class LoadingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.background
+        view.backgroundColor = Asset.Colors.background.color
         view.addSubview(activityIndicator)
         
         NSLayoutConstraint.activate([

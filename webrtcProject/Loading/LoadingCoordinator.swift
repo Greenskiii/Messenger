@@ -6,16 +6,20 @@
 //
 
 import XCoordinator
+import Onboarding
+import CommonLogic
 
 enum LoadingRoute: Route {
-    case openOnboarding
+    case openOnboarding(_ initialRoute: OnboardingRoute = .openSplash)
     case openHome
 }
 
 class LoadingCoordinator: ViewCoordinator<LoadingRoute> {
     private let nextRouteHandler: (LoadingRoute) -> Void
 
-    init(remoteConfigManager: RemoteConfigManagerProtocol,
+    init(
+        profileManager: ProfileManagerProtocol,
+        remoteConfigManager: RemoteConfigManagerProtocol,
         nextRouteHandler: @escaping (LoadingRoute) -> Void
     ) {
         self.nextRouteHandler = nextRouteHandler
@@ -26,6 +30,7 @@ class LoadingCoordinator: ViewCoordinator<LoadingRoute> {
         
         let domainModel = LoadingDomainModel(
             router: weakRouter,
+            profileManager: profileManager,
             remoteConfigManager: remoteConfigManager
         )
         viewController.domainModel = domainModel
