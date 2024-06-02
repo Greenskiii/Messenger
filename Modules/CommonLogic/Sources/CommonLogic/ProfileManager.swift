@@ -8,99 +8,119 @@
 import Foundation
 import FirebaseAuth
 import FirebaseStorage
+import Combine
 
 public protocol ProfileManagerProtocol {
-    var currentUser: User? { get }
-    func updateName(_ name: String, completion: @escaping (_ success: Bool) -> Void)
-    func updateImage(userId: String, image: Data, completion: @escaping (_ success: Bool) -> Void)
-    func updateUserInfo(userId: String, image: Data?, name: String, completion: @escaping (_ success: Bool) -> Void)
+    var currentUserPublisher: AnyPublisher<User?, Never> { get }
+    func updateName(_ name: String) -> AnyPublisher<Void, Error>
+    func updateImage(userId: String, image: Data) -> AnyPublisher<Void, Error>
+    func updateUserInfo(image: Data?, name: String) -> AnyPublisher<Void, Error>
 }
 
 public final class ProfileManager: ProfileManagerProtocol {
-    public var currentUser: User? {
-        Auth.auth().currentUser
+    @Published private var currentUser: User?
+
+    public var currentUserPublisher: AnyPublisher<User?, Never> {
+        $currentUser.eraseToAnyPublisher()
     }
 
-    public init() { }
+    private var cancellables = Set<AnyCancellable>()
 
-    public func updateUserInfo(
-        userId: String,
-        image: Data?,
-        name: String,
-        completion: @escaping (_ success: Bool) -> Void
-    ) {
-        let group = DispatchGroup()
-        var updateSuccess = true
-
-        group.enter()
-        updateName(name) { success in
-            if !success {
-                updateSuccess = false
-            }
-            group.leave()
-        }
-
-        if let image {
-            group.enter()
-            updateImage(userId: userId, image: image) { success in
-                if !success {
-                    updateSuccess = false
-                }
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) {
-            completion(updateSuccess)
-        }
+    public init(currentUser: AnyPublisher<User?, Never>) {
+        currentUser
+            .assign(to: &$currentUser)
     }
 
-    public func updateName(_ name: String, completion: @escaping (_ success: Bool) -> Void) {
-        let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-        changeRequest?.displayName = name
-
-        changeRequest?.commitChanges { (error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(false)
-            } else {
-                completion(true)
-            }
+    public func updateUserInfo(image: Data?, name: String) -> AnyPublisher<Void, Error> {
+        guard let user = currentUser else {
+            return Fail(error: NSError()).eraseToAnyPublisher()
         }
+        var publishers: [AnyPublisher<Void, Error>] = []
+
+        publishers.append(updateName(name))
+        
+        if let image = image {
+            publishers.append(updateImage(userId: user.id, image: image))
+        }
+
+        return Publishers.MergeMany(publishers)
+            .collect()
+            .map { _ in }
+            .eraseToAnyPublisher()
     }
 
-    public func updateImage(userId: String, image: Data, completion: @escaping (_ success: Bool) -> Void) {
-        let storageReference = Storage.storage().reference().child(userId).child("Photo.jpeg")
-        storageReference.putData(image) { (metadata, error) in
-            if let error {
-                print(error.localizedDescription)
-                completion(false)
-            }
-            
-            storageReference.downloadURL { (url, error) in
-                if let url = url {
-                    self.updateImagePath(imagePath: url.absoluteString) { success in
-                        completion(success)
-                    }
+    public func updateName(_ name: String) -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { promise in
+            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+            changeRequest?.displayName = name
+
+            changeRequest?.commitChanges { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    promise(.failure(error))
                 } else {
-                    print(error?.localizedDescription ?? "")
-                    completion(false)
+                    promise(.success(()))
                 }
             }
         }
+        .eraseToAnyPublisher()
     }
 
-    private func updateImagePath(imagePath: String, completion: @escaping (_ success: Bool) -> Void) {
-        let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-        changeRequest?.photoURL = URL(string: imagePath)
-
-        changeRequest?.commitChanges { (error) in
-            if let error = error {
-                print(error.localizedDescription)
-                completion(false)
-            } else {
-                completion(true)
+    public func updateImage(userId: String, image: Data) -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { promise in
+            let storageReference = Storage.storage().reference().child(userId).child("Photo.jpeg")
+            storageReference.putData(image, metadata: nil) { metadata, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    promise(.failure(error))
+                    return
+                }
+                
+                self.fetchDownloadURL(storageReference: storageReference)
+                    .flatMap { url in
+                        self.updateImagePath(imagePath: url.absoluteString)
+                    }
+                    .sink(receiveCompletion: { completion in
+                        if case .failure(let error) = completion {
+                            promise(.failure(error))
+                        } else {
+                            promise(.success(()))
+                        }
+                    }, receiveValue: { })
+                    .store(in: &self.cancellables)
             }
         }
+        .eraseToAnyPublisher()
+    }
+
+    private func fetchDownloadURL(storageReference: StorageReference) -> AnyPublisher<URL, Error> {
+        Future<URL, Error> { promise in
+            storageReference.downloadURL { url, error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    promise(.failure(error))
+                } else if let url = url {
+                    promise(.success(url))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+
+    private func updateImagePath(imagePath: String) -> AnyPublisher<Void, Error> {
+        Future<Void, Error> { promise in
+            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+            changeRequest?.photoURL = URL(string: imagePath)
+
+            changeRequest?.commitChanges { error in
+                if let error = error {
+                    print(error.localizedDescription)
+                    promise(.failure(error))
+                } else {
+                    promise(.success(()))
+                }
+            }
+        }
+        .eraseToAnyPublisher()
     }
 }

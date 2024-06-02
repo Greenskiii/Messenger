@@ -27,20 +27,15 @@ struct CodeField: View {
             Spacer()
             ForEach(0..<maxDigits, id: \.self) { index in
                 if code.count <= index {
-                    Spacer()
+                    Image(systemName: "circle.fill")
+                        .foregroundStyle(Color(uiColor: Asset.Colors.neutralLine.color))
+                        .frame(width: Constants.imageWidth, height: Constants.imageHeight)
+                } else {
+                    Text(code.getCharacter(at: index))
+                        .font(FontFamily.Mulish.bold.swiftUIFont(size: Constants.textSize))
                 }
+                Spacer()
             }
-//            ForEach(0..<maxDigits, id: \.self) { index in
-//                if code.count <= index as! Int {
-//                    Image(systemName: "circle.fill")
-//                        .foregroundStyle(Color.neutralLine)
-//                        .frame(width: Constants.imageWidth, height: Constants.imageHeight)
-//                } else {
-//                    Text(code.getCharacter(at: index))
-//                        .font(FontFamily.Mulish.bold.swiftUIFont(size: Constants.textSize))
-//                }
-//                Spacer()
-//            }
         }
     }
     

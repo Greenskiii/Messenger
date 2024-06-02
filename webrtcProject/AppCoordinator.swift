@@ -26,9 +26,10 @@ private class AppNavigationController: UINavigationController {
 class AppCoordinator: NavigationCoordinator<AppRoute> {
     private let remoteConfigManager = RemoteConfigManager()
     private let authManager = AuthManager()
-    private let profileManager = ProfileManager()
+    private let profileManager: ProfileManagerProtocol
 
     init(window: UIWindow) {
+        self.profileManager = ProfileManager(currentUser: authManager.currentUserPublisher)
         let appNavigationController = AppNavigationController()
         super.init(rootViewController: appNavigationController, initialRoute: .loading)
         setRoot(for: window)

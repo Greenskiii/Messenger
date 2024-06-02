@@ -10,10 +10,17 @@ import XCoordinator
 import Combine
 import CommonLogic
 
+enum ProfileInfoError {
+    case none
+    case saveUserInfo
+}
+
 final class ProfileInfoDomainModel {
     private let router: WeakRouter<ProfileInfoRoute>
     private let profileManager: ProfileManagerProtocol
     private var subscriptions = Set<AnyCancellable>()
+    @Published var error: ProfileInfoError = .none
+
     let onTapSave = PassthroughSubject<(String, Data?), Never>()
 
     init(
@@ -25,13 +32,17 @@ final class ProfileInfoDomainModel {
 
         onTapSave
             .sink { [weak self] (name, image) in
-                guard let currentUser = self?.profileManager.currentUser else { return }
-                self?.profileManager.updateUserInfo(userId: currentUser.uid, image: image, name: name) { success in
-                    if success {
-                        self?.router.trigger(.openHome)
-                    }
-                }
-                
+                self?.saveUserInfo(name, imageData: image)
+            }
+            .store(in: &subscriptions)
+    }
+
+    private func saveUserInfo(_ name: String, imageData: Data? = nil) {
+        profileManager.updateUserInfo(image: imageData, name: name)
+            .sink { [weak self] _ in
+                self?.error = .saveUserInfo
+            } receiveValue: { [weak self] _ in
+                self?.router.trigger(.openHome)
             }
             .store(in: &subscriptions)
     }

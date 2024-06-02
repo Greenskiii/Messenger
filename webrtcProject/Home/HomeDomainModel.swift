@@ -8,24 +8,22 @@
 import Foundation
 import XCoordinator
 import Combine
-import FirebaseAuth
 import CommonLogic
 
 final class HomeDomainModel {
     private let router: WeakRouter<HomeRoute>
-    private let profileManager: ProfileManagerProtocol
     private var subscriptions = Set<AnyCancellable>()
     let onTapContinue = PassthroughSubject<Void, Never>()
-    var user: User? {
-        profileManager.currentUser
-    }
+    @Published var user: User? = nil
 
     init(
         router: WeakRouter<HomeRoute>,
         profileManager: ProfileManagerProtocol
     ) {
         self.router = router
-        self.profileManager = profileManager
+
+        profileManager.currentUserPublisher
+            .assign(to: &self.$user)
 
         onTapContinue
             .sink { [weak self] _ in

@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import FirebaseAuth
+import CommonLogic
 
 final class HomeViewModel {
     let onTapContinue: PassthroughSubject<Void, Never>

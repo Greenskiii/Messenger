@@ -16,9 +16,9 @@ struct HomeView: View {
         if let user = viewModel.user {
             Spacer()
             Text(user.phoneNumber ?? "")
-            Text(user.displayName ?? "")
+            Text(user.name ?? "")
 
-            KFImage(user.photoURL)
+            KFImage(user.imageURL)
                 .frame(width: 200, height: 200)
             
             Spacer()

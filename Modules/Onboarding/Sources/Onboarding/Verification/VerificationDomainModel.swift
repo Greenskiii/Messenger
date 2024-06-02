@@ -11,6 +11,12 @@ import Combine
 import UIKit
 import CommonLogic
 
+enum VerificationError {
+    case none
+    case verification
+    case resend
+}
+
 final class VerificationDomainModel {
     private let router: WeakRouter<VerificationRoute>
     private let authManager: AuthManagerProtocol
@@ -20,9 +26,9 @@ final class VerificationDomainModel {
     let onSendCode = PassthroughSubject<String, Never>()
     let onHideKeyboard = PassthroughSubject<Void, Never>()
 
-    var phoneNumber: String {
-        authManager.phoneNumber
-    }
+    @Published var error: VerificationError = .none
+    @Published var phoneNumber: String = ""
+    @Published var user: User?
 
     init(
         router: WeakRouter<VerificationRoute>,
@@ -31,17 +37,16 @@ final class VerificationDomainModel {
         self.router = router
         self.authManager = authManager
 
+        authManager.currentUserPublisher
+            .assign(to: &self.$user)
+
+        authManager.phoneNumberPublisher
+            .assign(to: &self.$phoneNumber)
+
         onSendCode
             .sink { [weak self] code in
                 self?.onHideKeyboard.send()
-                self?.authManager.signIn(verificationCode: code) { success in
-                    let currentUser = self?.authManager.currentUser
-                    if success || currentUser != nil {
-                        self?.router.trigger(currentUser?.displayName == nil ? .openProfileInfo : .openHome)
-                    } else {
-                        print("show Error")
-                    }
-                }
+                self?.verifyCode(code)
             }
             .store(in: &subscriptions)
 
@@ -53,15 +58,26 @@ final class VerificationDomainModel {
 
         onTapResendButton
             .sink { [weak self] _ in
-                guard let self else { return }
-                self.authManager.verifyPhoneNumber(phoneNumber: self.phoneNumber) { success in
-                    if success {
-                        
-                    } else {
-                        
-                    }
-                }
+                self?.resendCode()
             }
+            .store(in: &subscriptions)
+    }
+
+    private func verifyCode(_ code: String) {
+        authManager.signIn(verificationCode: code)
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.error = .verification
+            }, receiveValue: { [weak self] _ in
+                self?.router.trigger(self?.user?.name == nil ? .openProfileInfo : .openHome)
+            })
+            .store(in: &subscriptions)
+    }
+
+    private func resendCode() {
+        authManager.verifyPhoneNumber(phoneNumber: phoneNumber)
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.error = .resend
+            }, receiveValue: { _ in })
             .store(in: &subscriptions)
     }
 }

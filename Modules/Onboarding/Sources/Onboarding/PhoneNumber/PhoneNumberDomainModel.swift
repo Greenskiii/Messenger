@@ -10,6 +10,11 @@ import XCoordinator
 import Combine
 import CommonLogic
 
+enum PhoneNumberError {
+    case none
+    case verifyNumber
+}
+
 final class PhoneNumberDomainModel {
     private let router: WeakRouter<PhoneNumberRoute>
     private let remoteConfigManager: RemoteConfigManagerProtocol
@@ -18,7 +23,9 @@ final class PhoneNumberDomainModel {
     
     let onTapContinue = PassthroughSubject<String, Never>()
     var countryNumbersConfig: [CountryInfo] = []
-    
+
+    @Published var error: PhoneNumberError = .none
+
     init(
         router: WeakRouter<PhoneNumberRoute>,
         authManager: AuthManagerProtocol,
@@ -32,14 +39,18 @@ final class PhoneNumberDomainModel {
         
         onTapContinue
             .sink { [weak self] phoneNumber in
-                self?.authManager.verifyPhoneNumber(phoneNumber: phoneNumber) { success in
-                    if success {
-                        self?.router.trigger(.openPhoneVerification)
-                    } else {
-                        print("Show error")
-                    }
-                }
+                self?.verifyPhoneNumber(phoneNumber)
             }
+            .store(in: &subscriptions)
+    }
+
+    private func verifyPhoneNumber(_ phoneNumber: String) {
+        authManager.verifyPhoneNumber(phoneNumber: phoneNumber)
+            .sink(receiveCompletion: { [weak self] _ in
+                self?.error = .verifyNumber
+            }, receiveValue: { [weak self] _ in
+                self?.router.trigger(.openPhoneVerification)
+            })
             .store(in: &subscriptions)
     }
 }

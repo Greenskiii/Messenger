@@ -5,15 +5,16 @@
 //  Created by Алексей Даневич on 21.05.2024.
 //
 
-import Foundation
 import XCoordinator
 import CommonLogic
 import Onboarding
+import Combine
 
 final class LoadingDomainModel {
     private let router: WeakRouter<LoadingRoute>
     private let remoteConfigManager: RemoteConfigManagerProtocol
-    private let profileManager: ProfileManagerProtocol
+    @Published private var user: User? = nil
+    var cancallable: Cancellable?
 
     init(
         router: WeakRouter<LoadingRoute>,
@@ -22,17 +23,22 @@ final class LoadingDomainModel {
     ) {
         self.router = router
         self.remoteConfigManager = remoteConfigManager
-        self.profileManager = profileManager
+        profileManager.currentUserPublisher
+            .assign(to: &self.$user)
         fetchConfig()
     }
 
     func fetchConfig() {
-        remoteConfigManager.fetchConfig() { [weak self] _ in
-            if let currentUser = self?.profileManager.currentUser {
-                self?.router.trigger(currentUser.displayName == nil ? .openOnboarding(.openProfileInfo) : .openHome)
-            } else {
-                self?.router.trigger(.openOnboarding())
-            }
-        }
+        cancallable = remoteConfigManager.fetchConfig()
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] _ in
+                    if let currentUser = self?.user {
+                        self?.router.trigger(currentUser.name == nil ? .openOnboarding(.openProfileInfo) : .openHome)
+                    } else {
+                        self?.router.trigger(.openOnboarding())
+                    }
+                }
+            )
     }
 }

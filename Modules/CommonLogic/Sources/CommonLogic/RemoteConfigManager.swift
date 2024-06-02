@@ -5,11 +5,11 @@
 //  Created by Алексей Даневич on 22.05.2024.
 //
 
-//import Firebase
+import Combine
 import FirebaseRemoteConfig
 
 public protocol RemoteConfigManagerProtocol {
-    func fetchConfig(completion: @escaping (Result<Void, Error>) -> Void)
+    func fetchConfig() -> AnyPublisher<Void, Error>
     func getValue<T: Decodable>(forKey key: String, type: T.Type) -> T?
 }
 
@@ -27,15 +27,18 @@ public class RemoteConfigManager: RemoteConfigManagerProtocol {
         remoteConfig.setDefaults(loadLocalConfig())
     }
 
-    public func fetchConfig(completion: @escaping (Result<Void, Error>) -> Void) {
-        remoteConfig.fetchAndActivate { status, error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(()))
-            }
-        }
-    }
+    public func fetchConfig() -> AnyPublisher<Void, Error> {
+         return Future<Void, Error> { promise in
+             self.remoteConfig.fetchAndActivate { status, error in
+                 if let error = error {
+                     promise(.failure(error))
+                 } else {
+                     promise(.success(()))
+                 }
+             }
+         }
+         .eraseToAnyPublisher()
+     }
 
     public func getValue<T: Decodable>(forKey key: String, type: T.Type) -> T? {
         guard let jsonString = remoteConfig.configValue(forKey: key).stringValue,
