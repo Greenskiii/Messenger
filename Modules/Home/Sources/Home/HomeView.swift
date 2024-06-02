@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Kingfisher
-import FirebaseAuth
 
 struct HomeView: View {
     let viewModel: HomeViewModel
@@ -24,11 +23,11 @@ struct HomeView: View {
             Spacer()
             
             Button {
-                do {
-                    try Auth.auth().signOut()
-                } catch {
-                    print("Auth.auth().signOut() error")
-                }
+//                do {
+//                    try Auth.auth().signOut()
+//                } catch {
+//                    print("Auth.auth().signOut() error")
+//                }
             } label: {
                 Text("Sign Out")
             }

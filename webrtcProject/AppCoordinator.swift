@@ -9,6 +9,7 @@ import XCoordinator
 import UIKit
 import CommonLogic
 import Onboarding
+import Home
 
 enum AppRoute: Route {
     case loading

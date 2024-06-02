@@ -9,14 +9,14 @@ import XCoordinator
 import UIKit
 import CommonLogic
 
-enum HomeRoute: Route {
+public enum HomeRoute: Route {
     case openPhoneNumber
 }
 
-class HomeCoordinator: ViewCoordinator<HomeRoute> {
+public final class HomeCoordinator: ViewCoordinator<HomeRoute> {
     private let nextRouteHandler: (HomeRoute) -> Void
 
-    init(
+    public init(
         profileManager: ProfileManagerProtocol,
         nextRouteHandler: @escaping (HomeRoute) -> Void
     ) {
@@ -31,7 +31,7 @@ class HomeCoordinator: ViewCoordinator<HomeRoute> {
         viewController.domainModel = domainModel
     }
     
-    override func prepareTransition(for route: HomeRoute) -> TransitionType {
+    override public func prepareTransition(for route: HomeRoute) -> TransitionType {
         nextRouteHandler(route)
         return .none()
     }
