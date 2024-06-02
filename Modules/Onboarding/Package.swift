@@ -10,7 +10,8 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Onboarding",
-            targets: ["Onboarding"]),
+            targets: ["Onboarding"]
+        ),
     ],
     dependencies: [
         .package(name: "BaseUI", path: "../BaseUI"),
@@ -27,10 +28,12 @@ let package = Package(
                 "BaseUI",
                 "CommonLogic",
                 "Design",
-                .product(name: "XCoordinator", package: "XCoordinator"),
-            ]),
+                "XCoordinator"
+            ]
+        ),
         .testTarget(
             name: "OnboardingTests",
-            dependencies: ["Onboarding"]),
+            dependencies: ["Onboarding"]
+        ),
     ]
 )

@@ -29,6 +29,7 @@ let package = Package(
         ),
         .testTarget(
             name: "CommonLogicTests",
-            dependencies: ["CommonLogic"]),
+            dependencies: ["CommonLogic"]
+        ),
     ]
 )
