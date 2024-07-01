@@ -18,7 +18,7 @@ class LoadingCoordinator: ViewCoordinator<LoadingRoute> {
     private let nextRouteHandler: (LoadingRoute) -> Void
 
     init(
-        profileManager: ProfileManagerProtocol,
+        authManager: AuthManagerProtocol,
         remoteConfigManager: RemoteConfigManagerProtocol,
         nextRouteHandler: @escaping (LoadingRoute) -> Void
     ) {
@@ -30,7 +30,7 @@ class LoadingCoordinator: ViewCoordinator<LoadingRoute> {
         
         let domainModel = LoadingDomainModel(
             router: weakRouter,
-            profileManager: profileManager,
+            authManager: authManager,
             remoteConfigManager: remoteConfigManager
         )
         viewController.domainModel = domainModel

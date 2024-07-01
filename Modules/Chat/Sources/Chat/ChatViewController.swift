@@ -1,5 +1,5 @@
 //
-//  HomeViewController.swift
+//  ChatViewController.swift
 //  webrtc
 //
 //  Created by Алексей Даневич on 15.05.2024.
@@ -9,12 +9,12 @@ import UIKit
 import SwiftUI
 import BaseUI
 
-final class HomeViewController: UIViewController {
-    var domainModel: HomeDomainModel!
+final class ChatViewController: UIViewController {
+    var domainModel: ChatDomainModel!
     
-    private lazy var embedController: UIHostingController<HomeView> = {
-        let viewModel = HomeViewModel(onTapContinue: domainModel.onTapContinue)
-        let controller = UIHostingController(rootView: HomeView(viewModel: viewModel))
+    private lazy var embedController: UIHostingController<ChatView> = {
+        let viewModel = ChatViewModel(onTapContinue: domainModel.onTapContinue)
+        let controller = UIHostingController(rootView: ChatView(viewModel: viewModel))
         return controller
     }()
     

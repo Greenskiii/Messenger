@@ -40,7 +40,7 @@ class AppCoordinator: NavigationCoordinator<AppRoute> {
         switch route {
         case .loading:
             let coordinator = LoadingCoordinator(
-                profileManager: profileManager,
+                authManager: authManager,
                 remoteConfigManager: remoteConfigManager
             ) { [weak self] route in
                 switch route {
@@ -67,7 +67,7 @@ class AppCoordinator: NavigationCoordinator<AppRoute> {
             coordinator.rootViewController.modalPresentationStyle = .fullScreen
             return .present(coordinator)
         case .home:
-            let coordinator = HomeCoordinator(profileManager: profileManager) { [weak self] route in
+            let coordinator = MainTabBarCoordinator(profileManager: profileManager) { [weak self] route in
                 self?.trigger(.flowFinished)
             }
             return .set([coordinator])

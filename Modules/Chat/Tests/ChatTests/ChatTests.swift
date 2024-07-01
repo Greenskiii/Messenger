@@ -1,7 +1,7 @@
 import XCTest
-@testable import Home
+@testable import Chat
 
-final class HomeTests: XCTestCase {
+final class ChatTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

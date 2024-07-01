@@ -1,14 +1,13 @@
 //
-//  HomeViewModel.swift
+//  ChatViewModel.swift
 //  webrtcProject
 //
 //  Created by Алексей Даневич on 21.05.2024.
 //
 
-import Foundation
 import Combine
 
-final class HomeViewModel {
+final class ChatViewModel {
     let onTapContinue: PassthroughSubject<Void, Never>
 
     init(

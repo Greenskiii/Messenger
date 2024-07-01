@@ -18,12 +18,12 @@ final class LoadingDomainModel {
 
     init(
         router: WeakRouter<LoadingRoute>,
-        profileManager: ProfileManagerProtocol,
+        authManager: AuthManagerProtocol,
         remoteConfigManager: RemoteConfigManagerProtocol
     ) {
         self.router = router
         self.remoteConfigManager = remoteConfigManager
-        profileManager.currentUserPublisher
+        authManager.currentUserPublisher
             .assign(to: &self.$user)
         fetchConfig()
     }

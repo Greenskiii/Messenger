@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  SettingsViewModel.swift
 //  webrtcProject
 //
 //  Created by Алексей Даневич on 21.05.2024.
@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class HomeViewModel {
+final class SettingsViewModel {
     let onTapContinue: PassthroughSubject<Void, Never>
 
     init(

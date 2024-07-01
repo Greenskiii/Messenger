@@ -1,0 +1,52 @@
+{
+  "configurations" : [
+    {
+      "id" : "EC0B37EE-C7C8-41EF-9836-4DADA42B3677",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/CommonLogic",
+        "identifier" : "CommonLogicTests",
+        "name" : "CommonLogicTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/BaseUI",
+        "identifier" : "BaseUITests",
+        "name" : "BaseUITests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/Home",
+        "identifier" : "HomeTests",
+        "name" : "HomeTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/Design",
+        "identifier" : "DesignTests",
+        "name" : "DesignTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Modules\/Onboarding",
+        "identifier" : "OnboardingTests",
+        "name" : "OnboardingTests"
+      }
+    }
+  ],
+  "version" : 1
+}

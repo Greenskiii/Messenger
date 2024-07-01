@@ -1,7 +1,7 @@
 import XCTest
-@testable import CommonLogic
+@testable import Settings
 
-final class CommonLogicTests: XCTestCase {
+final class SettingsTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

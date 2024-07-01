@@ -5,7 +5,6 @@
 //  Created by Алексей Даневич on 22.05.2024.
 //
 
-import FirebaseAuth
 import Combine
 
 public protocol AuthManagerProtocol {
@@ -20,6 +19,9 @@ public final class AuthManager: AuthManagerProtocol {
     @Published private var phoneNumber: String = ""
     private var currentVerificationId = ""
 
+    private let firebasePhoneAuthProvider: PhoneAuthProviderProtocol
+    private var firebaseAuthProvider: AuthProviderProtocol
+
     public var currentUserPublisher: AnyPublisher<User?, Never> {
         $currentUser.eraseToAnyPublisher()
     }
@@ -28,18 +30,25 @@ public final class AuthManager: AuthManagerProtocol {
         $phoneNumber.eraseToAnyPublisher()
     }
 
-    public init() {
-        Auth.auth().languageCode = "en"
+    public init(
+        firebasePhoneAuthProvider: PhoneAuthProviderProtocol = FirebasePhoneAuthProvider(),
+        firebaseAuthProvider: AuthProviderProtocol = FirebaseAuthProvider()
+    ) {
+        self.firebasePhoneAuthProvider = firebasePhoneAuthProvider
+        self.firebaseAuthProvider = firebaseAuthProvider
+        self.firebaseAuthProvider.languageCode = "en"
+        let user = firebaseAuthProvider.currentUser
+        self.currentUser = firebaseAuthProvider.convertUser(user)
     }
 
     public func verifyPhoneNumber(phoneNumber: String) -> AnyPublisher<Void, Error> {
         self.phoneNumber = phoneNumber
-        return Future<Void, Error> { promise in
-            PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
+        return Future<Void, Error> { [weak self] promise in
+            self?.firebasePhoneAuthProvider.verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    self.currentVerificationId = verificationID ?? ""
+                    self?.currentVerificationId = verificationID ?? ""
                     promise(.success(()))
                 }
             }
@@ -48,29 +57,17 @@ public final class AuthManager: AuthManagerProtocol {
     }
 
     public func signIn(verificationCode: String) -> AnyPublisher<Void, Error> {
-        let credential = PhoneAuthProvider.provider().credential(withVerificationID: currentVerificationId, verificationCode: verificationCode)
-        return Future<Void, Error> { promise in
-            Auth.auth().signIn(with: credential) { (authResult, error) in
+        let credential = firebasePhoneAuthProvider.credential(withVerificationID: currentVerificationId, verificationCode: verificationCode)
+        return Future<Void, Error> { [weak self] promise in
+            self?.firebaseAuthProvider.signIn(with: credential) { (authResult, error) in
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    self.currentUser = self.setUser(authResult?.user)
+                    self?.currentUser = self?.firebaseAuthProvider.convertUser(authResult?.user)
                     promise(.success(()))
                 }
             }
         }
         .eraseToAnyPublisher()
-    }
-
-    private func setUser(_ user: FirebaseAuth.User?) -> User? {
-        guard let user else {
-            return nil
-        }
-        return User(
-            name: user.displayName,
-            imageURL: user.photoURL,
-            phoneNumber: user.phoneNumber,
-            id: user.uid
-        )
     }
 }
