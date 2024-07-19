@@ -28,7 +28,6 @@ final class VerificationDomainModel {
 
     @Published var error: VerificationError = .none
     @Published var phoneNumber: String = ""
-    @Published var user: User?
 
     init(
         router: WeakRouter<VerificationRoute>,
@@ -36,9 +35,6 @@ final class VerificationDomainModel {
     ) {
         self.router = router
         self.authManager = authManager
-
-        authManager.currentUserPublisher
-            .assign(to: &self.$user)
 
         authManager.phoneNumberPublisher
             .assign(to: &self.$phoneNumber)
@@ -67,8 +63,8 @@ final class VerificationDomainModel {
         authManager.signIn(verificationCode: code)
             .sink(receiveCompletion: { [weak self] _ in
                 self?.error = .verification
-            }, receiveValue: { [weak self] _ in
-                self?.router.trigger(self?.user?.name == nil ? .openProfileInfo : .openHome)
+            }, receiveValue: { [weak self] name in
+                self?.router.trigger(name == nil ? .openProfileInfo : .openHome)
             })
             .store(in: &subscriptions)
     }

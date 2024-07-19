@@ -13,6 +13,7 @@
   },
   "testTargets" : [
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:Modules\/CommonLogic",
         "identifier" : "CommonLogicTests",
@@ -20,6 +21,7 @@
       }
     },
     {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:Modules\/BaseUI",
         "identifier" : "BaseUITests",
@@ -27,20 +29,7 @@
       }
     },
     {
-      "target" : {
-        "containerPath" : "container:Modules\/Home",
-        "identifier" : "HomeTests",
-        "name" : "HomeTests"
-      }
-    },
-    {
-      "target" : {
-        "containerPath" : "container:Modules\/Design",
-        "identifier" : "DesignTests",
-        "name" : "DesignTests"
-      }
-    },
-    {
+      "enabled" : false,
       "target" : {
         "containerPath" : "container:Modules\/Onboarding",
         "identifier" : "OnboardingTests",

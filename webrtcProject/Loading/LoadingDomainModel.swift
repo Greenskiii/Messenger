@@ -13,8 +13,8 @@ import Combine
 final class LoadingDomainModel {
     private let router: WeakRouter<LoadingRoute>
     private let remoteConfigManager: RemoteConfigManagerProtocol
-    @Published private var user: User? = nil
     var cancallable: Cancellable?
+    private let authManager: AuthManagerProtocol
 
     init(
         router: WeakRouter<LoadingRoute>,
@@ -23,8 +23,7 @@ final class LoadingDomainModel {
     ) {
         self.router = router
         self.remoteConfigManager = remoteConfigManager
-        authManager.currentUserPublisher
-            .assign(to: &self.$user)
+        self.authManager = authManager
         fetchConfig()
     }
 
@@ -33,10 +32,11 @@ final class LoadingDomainModel {
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] _ in
-                    if let currentUser = self?.user {
-                        self?.router.trigger(currentUser.name == nil ? .openOnboarding(.openProfileInfo) : .openHome)
+                    guard let self else { return }
+                    if self.authManager.isLoggedIn {
+                        self.router.trigger(.openHome)
                     } else {
-                        self?.router.trigger(.openOnboarding())
+                        self.router.trigger(.openOnboarding())
                     }
                 }
             )

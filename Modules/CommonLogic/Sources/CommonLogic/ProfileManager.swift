@@ -12,115 +12,148 @@ import Combine
 
 public protocol ProfileManagerProtocol {
     var currentUserPublisher: AnyPublisher<User?, Never> { get }
-    func updateName(_ name: String) -> AnyPublisher<Void, Error>
-    func updateImage(userId: String, image: Data) -> AnyPublisher<Void, Error>
-    func updateUserInfo(image: Data?, name: String) -> AnyPublisher<Void, Error>
+    var userId: String? { get }
+    func registerUser(name: String, image: Data?) -> AnyPublisher<Void, Error>
+    func getUsers(with phoneNumber: String) -> AnyPublisher<[User], NetworkError>
+    func addContact(with id: String) -> AnyPublisher<Void, Error>
+    func getUserInfo()
 }
 
 public final class ProfileManager: ProfileManagerProtocol {
-    @Published private var currentUser: User?
+    private let networkManager = NetworkManager()
+    private let firebaseAuthProvider: FirebaseAuthProvider
+    private var contactsManager: ContactsManager?
+    private var user: User?
+    @Published private var currentUserRelay = PassthroughSubject<User?, Never>()
 
     public var currentUserPublisher: AnyPublisher<User?, Never> {
-        $currentUser.eraseToAnyPublisher()
+        currentUserRelay.eraseToAnyPublisher()
     }
-
+    
     private var cancellables = Set<AnyCancellable>()
-
-    public init(currentUser: AnyPublisher<User?, Never>) {
-        currentUser
-            .assign(to: &$currentUser)
+    
+    public var userId: String? {
+        firebaseAuthProvider.currentUser?.uid
+    }
+    
+    private var phoneNumber: String? {
+        firebaseAuthProvider.currentUser?.phoneNumber
+    }
+    
+    public init(firebaseAuthProvider: FirebaseAuthProvider = FirebaseAuthProvider()) {
+        self.firebaseAuthProvider = firebaseAuthProvider
+        self.getUserInfo()
     }
 
-    public func updateUserInfo(image: Data?, name: String) -> AnyPublisher<Void, Error> {
-        guard let user = currentUser else {
-            return Fail(error: NSError()).eraseToAnyPublisher()
-        }
-        var publishers: [AnyPublisher<Void, Error>] = []
-
-        publishers.append(updateName(name))
+    public func getUserInfo() {
+        guard let userId else { return }
         
-        if let image = image {
-            publishers.append(updateImage(userId: user.id, image: image))
-        }
+        networkManager.execute(endpoint: .getUserInfo(userId: userId))
+            .sink { _ in
+            } receiveValue: { [weak self] user in
+                self?.getContacts(for: user)
+            }
+            .store(in: &cancellables)
+    }
 
-        return Publishers.MergeMany(publishers)
-            .collect()
-            .map { _ in }
+    public func addContact(with id: String) -> AnyPublisher<Void, Error> {
+        guard let currentUserId = userId else {
+            return Fail(error: NetworkError.urlFailure).eraseToAnyPublisher()
+        }
+        return networkManager.execute(endpoint: .addContact(currentUserId: currentUserId, userId: id))
+            .map { [weak self] (user: User) in
+                if !(self?.user?.contacts?.contains(where: { $0.id == user.id }) ?? true) {
+                    var contacts = self?.user?.contacts
+                    contacts?.append(user)
+                    self?.contactsManager?.setUsers(contacts ?? [])
+                }
+            }
+            .mapError { $0 as Error }
             .eraseToAnyPublisher()
     }
 
-    public func updateName(_ name: String) -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
-            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-            changeRequest?.displayName = name
-
-            changeRequest?.commitChanges { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    promise(.failure(error))
-                } else {
-                    promise(.success(()))
-                }
-            }
-        }
-        .eraseToAnyPublisher()
+    public func getUsers(with phoneNumber: String) -> AnyPublisher<[User], NetworkError> {
+        networkManager.execute(endpoint: .search(phoneNumber: phoneNumber))
     }
 
-    public func updateImage(userId: String, image: Data) -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
-            let storageReference = Storage.storage().reference().child(userId).child("Photo.jpeg")
+    public func registerUser(name: String, image: Data?) -> AnyPublisher<Void, Error> {
+        guard let userId, let phoneNumber else {
+            return Fail(error: NetworkError.urlFailure).eraseToAnyPublisher()
+        }
+        
+        if let image {
+            return addUserInfoWithImage(userId: userId, name: name, image: image, phoneNumber: phoneNumber)
+        } else {
+            return addUserInfo(userId: userId, name: name, imageURL: nil, phoneNumber: phoneNumber)
+        }
+    }
+}
+
+private extension ProfileManager {
+    func getContacts(for user: User) {
+        networkManager.execute(endpoint: .getContacts(ids: user.friends))
+            .sink { [weak self] completion in
+                if case .failure(_) = completion {
+                    self?.currentUserRelay.send(user)
+                    self?.contactsManager = ContactsManager(userId: user.id, userName: user.name)
+                }
+            } receiveValue: { [weak self] (users: [User]) in
+                var updatedUser = user
+                updatedUser.contacts = users
+                self?.user = updatedUser
+                self?.currentUserRelay.send(updatedUser)
+                self?.contactsManager = ContactsManager(userId: user.id, userName: user.name)
+                self?.setUpBindings()
+                self?.contactsManager?.setUsers(users)
+            }
+            .store(in: &cancellables)
+    }
+
+    func addUserInfo(userId: String, name: String, imageURL: String?, phoneNumber: String) -> AnyPublisher<Void, Error> {
+        return networkManager.execute(endpoint: Endpoint.login(phoneNumber: phoneNumber, name: name, imageURL: imageURL, id: userId))
+            .map { [weak self] (user: User) in
+                self?.currentUserRelay.send(user)
+            }
+            .mapError { $0 as Error }
+            .eraseToAnyPublisher()
+    }
+
+    func addUserInfoWithImage(userId: String, name: String, image: Data, phoneNumber: String) -> AnyPublisher<Void, Error> {
+        let storageReference = Storage.storage().reference().child(userId).child("Photo.jpeg")
+        
+        return uploadImage(storageReference: storageReference, image: image)
+            .flatMap { url in
+                self.addUserInfo(userId: userId, name: name, imageURL: url.absoluteString, phoneNumber: phoneNumber)
+            }
+            .eraseToAnyPublisher()
+    }
+
+    func uploadImage(storageReference: StorageReference, image: Data) -> AnyPublisher<URL, Error> {
+        Future<URL, Error> { promise in
             storageReference.putData(image, metadata: nil) { metadata, error in
                 if let error = error {
-                    print(error.localizedDescription)
                     promise(.failure(error))
                     return
                 }
-                
-                self.fetchDownloadURL(storageReference: storageReference)
-                    .flatMap { url in
-                        self.updateImagePath(imagePath: url.absoluteString)
+                storageReference.downloadURL { url, error in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else if let url = url {
+                        promise(.success(url))
                     }
-                    .sink(receiveCompletion: { completion in
-                        if case .failure(let error) = completion {
-                            promise(.failure(error))
-                        } else {
-                            promise(.success(()))
-                        }
-                    }, receiveValue: { })
-                    .store(in: &self.cancellables)
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-
-    private func fetchDownloadURL(storageReference: StorageReference) -> AnyPublisher<URL, Error> {
-        Future<URL, Error> { promise in
-            storageReference.downloadURL { url, error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    promise(.failure(error))
-                } else if let url = url {
-                    promise(.success(url))
                 }
             }
         }
         .eraseToAnyPublisher()
     }
 
-    private func updateImagePath(imagePath: String) -> AnyPublisher<Void, Error> {
-        Future<Void, Error> { promise in
-            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
-            changeRequest?.photoURL = URL(string: imagePath)
-
-            changeRequest?.commitChanges { error in
-                if let error = error {
-                    print(error.localizedDescription)
-                    promise(.failure(error))
-                } else {
-                    promise(.success(()))
-                }
+    func setUpBindings() {
+        self.contactsManager?.usersPublisher
+            .sink { [weak self] users in
+                var updatedUser = self?.user
+                updatedUser?.contacts = users
+                self?.currentUserRelay.send(updatedUser)
             }
-        }
-        .eraseToAnyPublisher()
+            .store(in: &self.cancellables)
     }
 }

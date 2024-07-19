@@ -9,7 +9,7 @@ import XCoordinator
 import UIKit
 import CommonLogic
 import Onboarding
-import Home
+import Contacts
 
 enum AppRoute: Route {
     case loading
@@ -29,8 +29,13 @@ class AppCoordinator: NavigationCoordinator<AppRoute> {
     private let authManager = AuthManager()
     private let profileManager: ProfileManagerProtocol
 
+    private lazy var mainTabBarCoordinator: MainTabBarCoordinator = {
+        MainTabBarCoordinator(profileManager: profileManager) { [weak self] route in
+            self?.trigger(.flowFinished)
+        }
+    }()
     init(window: UIWindow) {
-        self.profileManager = ProfileManager(currentUser: authManager.currentUserPublisher)
+        self.profileManager = ProfileManager()
         let appNavigationController = AppNavigationController()
         super.init(rootViewController: appNavigationController, initialRoute: .loading)
         setRoot(for: window)
@@ -59,18 +64,17 @@ class AppCoordinator: NavigationCoordinator<AppRoute> {
                 initialRoute: initialRoute
             ) { [weak self] route in
                 if route == .openHome {
-                    self?.trigger(.flowFinished) {
-                        self?.trigger(.home)
+                    DispatchQueue.main.async {
+                        self?.trigger(.flowFinished) {
+                            self?.trigger(.home)
+                        }
                     }
                 }
             }
             coordinator.rootViewController.modalPresentationStyle = .fullScreen
             return .present(coordinator)
         case .home:
-            let coordinator = MainTabBarCoordinator(profileManager: profileManager) { [weak self] route in
-                self?.trigger(.flowFinished)
-            }
-            return .set([coordinator])
+            return .set([mainTabBarCoordinator])
         case .flowFinished:
             return .dismiss()
         }

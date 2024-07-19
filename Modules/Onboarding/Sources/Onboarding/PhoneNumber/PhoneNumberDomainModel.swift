@@ -46,7 +46,7 @@ final class PhoneNumberDomainModel {
 
     private func verifyPhoneNumber(_ phoneNumber: String) {
         authManager.verifyPhoneNumber(phoneNumber: phoneNumber)
-            .sink(receiveCompletion: { [weak self] _ in
+            .sink(receiveCompletion: { [weak self] completion in
                 self?.error = .verifyNumber
             }, receiveValue: { [weak self] _ in
                 self?.router.trigger(.openPhoneVerification)

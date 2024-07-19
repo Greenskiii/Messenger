@@ -8,22 +8,21 @@
 import Combine
 
 public protocol AuthManagerProtocol {
-    var currentUserPublisher: AnyPublisher<User?, Never> { get }
+    var isLoggedIn: Bool { get }
     var phoneNumberPublisher: AnyPublisher<String, Never> { get }
     func verifyPhoneNumber(phoneNumber: String) -> AnyPublisher<Void, Error>
-    func signIn(verificationCode: String) -> AnyPublisher<Void, Error>
+    func signIn(verificationCode: String) -> AnyPublisher<String?, Error>
 }
 
 public final class AuthManager: AuthManagerProtocol {
-    @Published private var currentUser: User? = nil
     @Published private var phoneNumber: String = ""
     private var currentVerificationId = ""
 
     private let firebasePhoneAuthProvider: PhoneAuthProviderProtocol
     private var firebaseAuthProvider: AuthProviderProtocol
 
-    public var currentUserPublisher: AnyPublisher<User?, Never> {
-        $currentUser.eraseToAnyPublisher()
+    public var isLoggedIn: Bool {
+        firebaseAuthProvider.currentUser != nil
     }
 
     public var phoneNumberPublisher: AnyPublisher<String, Never> {
@@ -37,8 +36,6 @@ public final class AuthManager: AuthManagerProtocol {
         self.firebasePhoneAuthProvider = firebasePhoneAuthProvider
         self.firebaseAuthProvider = firebaseAuthProvider
         self.firebaseAuthProvider.languageCode = "en"
-        let user = firebaseAuthProvider.currentUser
-        self.currentUser = firebaseAuthProvider.convertUser(user)
     }
 
     public func verifyPhoneNumber(phoneNumber: String) -> AnyPublisher<Void, Error> {
@@ -56,15 +53,14 @@ public final class AuthManager: AuthManagerProtocol {
         .eraseToAnyPublisher()
     }
 
-    public func signIn(verificationCode: String) -> AnyPublisher<Void, Error> {
+    public func signIn(verificationCode: String) -> AnyPublisher<String?, Error> {
         let credential = firebasePhoneAuthProvider.credential(withVerificationID: currentVerificationId, verificationCode: verificationCode)
-        return Future<Void, Error> { [weak self] promise in
+        return Future<String?, Error> { [weak self] promise in
             self?.firebaseAuthProvider.signIn(with: credential) { (authResult, error) in
                 if let error = error {
                     promise(.failure(error))
                 } else {
-                    self?.currentUser = self?.firebaseAuthProvider.convertUser(authResult?.user)
-                    promise(.success(()))
+                    promise(.success((authResult?.user.displayName)))
                 }
             }
         }

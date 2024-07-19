@@ -14,7 +14,6 @@
 		B80B0C8D2BFCEE97004860A3 /* LoadingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80B0C8C2BFCEE97004860A3 /* LoadingCoordinator.swift */; };
 		B80B0C8F2BFCF080004860A3 /* LoadingDomainModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80B0C8E2BFCF080004860A3 /* LoadingDomainModel.swift */; };
 		B812735B2C0921360027D6A6 /* CommonLogic in Frameworks */ = {isa = PBXBuildFile; productRef = B812735A2C0921360027D6A6 /* CommonLogic */; };
-		B812735D2C09213A0027D6A6 /* Design in Frameworks */ = {isa = PBXBuildFile; productRef = B812735C2C09213A0027D6A6 /* Design */; };
 		B812735F2C09213E0027D6A6 /* Onboarding in Frameworks */ = {isa = PBXBuildFile; productRef = B812735E2C09213E0027D6A6 /* Onboarding */; };
 		B81F9EA62BFCAF0100FB910A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B81F9EA52BFCAF0000FB910A /* GoogleService-Info.plist */; };
 		B81F9EA92BFCAF8300FB910A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B81F9EA82BFCAF8300FB910A /* FirebaseAuth */; };
@@ -27,6 +26,7 @@
 		B81F9EB72BFCAF8300FB910A /* FirebaseRemoteConfigSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B81F9EB62BFCAF8300FB910A /* FirebaseRemoteConfigSwift */; };
 		B81F9EB92BFCAF8300FB910A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B81F9EB82BFCAF8300FB910A /* FirebaseStorage */; };
 		B81F9EBB2BFCAF8300FB910A /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = B81F9EBA2BFCAF8300FB910A /* FirebaseStorageCombine-Community */; };
+		B822B8852C41874D002842D2 /* Contacts in Frameworks */ = {isa = PBXBuildFile; productRef = B822B8842C41874D002842D2 /* Contacts */; };
 		B82C51B32C2EF57200276761 /* DebugButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B82C51B22C2EF57200276761 /* DebugButtonViewController.swift */; };
 		B852F32E2BF52A670076D3BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B852F32D2BF52A670076D3BC /* AppDelegate.swift */; };
 		B852F3302BF52A670076D3BC /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B852F32F2BF52A670076D3BC /* SceneDelegate.swift */; };
@@ -34,18 +34,17 @@
 		B852F33A2BF52A690076D3BC /* Base in Resources */ = {isa = PBXBuildFile; fileRef = B852F3392BF52A690076D3BC /* Base */; };
 		B852F34C2BF52AC60076D3BC /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B852F3462BF52AC60076D3BC /* AppCoordinator.swift */; };
 		B8655CAF2C0FA85C00CD5D1F /* webrtcProjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8655CAE2C0FA85C00CD5D1F /* webrtcProjectTests.swift */; };
-		B870D7DF2C0D0A9700479083 /* Home in Frameworks */ = {isa = PBXBuildFile; productRef = B870D7DE2C0D0A9700479083 /* Home */; };
 		B875CC802C161EFA008F12B8 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875CC7D2C161EFA008F12B8 /* TabBarController.swift */; };
 		B875CC812C161EFA008F12B8 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B875CC7E2C161EFA008F12B8 /* TabBarCoordinator.swift */; };
 		B875CC852C162489008F12B8 /* Chat in Frameworks */ = {isa = PBXBuildFile; productRef = B875CC842C162489008F12B8 /* Chat */; };
 		B875CC872C16248D008F12B8 /* Settings in Frameworks */ = {isa = PBXBuildFile; productRef = B875CC862C16248D008F12B8 /* Settings */; };
+		B8B203122C53E63B00819281 /* Messages in Frameworks */ = {isa = PBXBuildFile; productRef = B8B203112C53E63B00819281 /* Messages */; };
 		B8B5BB7E2BFD0F7B008DE18F /* swiftgen.config.yml in Resources */ = {isa = PBXBuildFile; fileRef = B8B5BB7C2BFD0F7B008DE18F /* swiftgen.config.yml */; };
 		B8B5BB7F2BFD0F7B008DE18F /* template.stencil in Resources */ = {isa = PBXBuildFile; fileRef = B8B5BB7D2BFD0F7B008DE18F /* template.stencil */; };
 		B8B5BB972BFDF4E7008DE18F /* local_config.json in Resources */ = {isa = PBXBuildFile; fileRef = B8B5BB962BFDF4E7008DE18F /* local_config.json */; };
 		B8D17C152C09094E005FFBC7 /* BaseUI in Frameworks */ = {isa = PBXBuildFile; productRef = B8D17C142C09094E005FFBC7 /* BaseUI */; };
 		B8D17C282C09135F005FFBC7 /* BaseUI in Resources */ = {isa = PBXBuildFile; fileRef = B8D17C232C09135F005FFBC7 /* BaseUI */; };
 		B8D17C292C09135F005FFBC7 /* CommonLogic in Resources */ = {isa = PBXBuildFile; fileRef = B8D17C242C09135F005FFBC7 /* CommonLogic */; };
-		B8D17C2A2C09135F005FFBC7 /* Design in Resources */ = {isa = PBXBuildFile; fileRef = B8D17C252C09135F005FFBC7 /* Design */; };
 		B8D17C2B2C09135F005FFBC7 /* Onboarding in Resources */ = {isa = PBXBuildFile; fileRef = B8D17C262C09135F005FFBC7 /* Onboarding */; };
 /* End PBXBuildFile section */
 
@@ -64,6 +63,7 @@
 		B80B0C8C2BFCEE97004860A3 /* LoadingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingCoordinator.swift; sourceTree = "<group>"; };
 		B80B0C8E2BFCF080004860A3 /* LoadingDomainModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingDomainModel.swift; sourceTree = "<group>"; };
 		B81F9EA52BFCAF0000FB910A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		B822B8832C41873E002842D2 /* Contacts */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Contacts; sourceTree = "<group>"; };
 		B82C51B22C2EF57200276761 /* DebugButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugButtonViewController.swift; sourceTree = "<group>"; };
 		B852F32A2BF52A670076D3BC /* webrtcProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = webrtcProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B852F32D2BF52A670076D3BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -75,17 +75,16 @@
 		B8655CAC2C0FA85C00CD5D1F /* webrtcProjectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = webrtcProjectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8655CAE2C0FA85C00CD5D1F /* webrtcProjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = webrtcProjectTests.swift; sourceTree = "<group>"; };
 		B8655CB52C0FAF2400CD5D1F /* webrtcProject.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = webrtcProject.xctestplan; sourceTree = "<group>"; };
-		B870D7DD2C0D093400479083 /* Home */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Home; sourceTree = "<group>"; };
 		B875CC7D2C161EFA008F12B8 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		B875CC7E2C161EFA008F12B8 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
 		B875CC822C16225D008F12B8 /* Chat */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Chat; sourceTree = "<group>"; };
 		B875CC832C162262008F12B8 /* Settings */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Settings; sourceTree = "<group>"; };
+		B8B203102C537BB600819281 /* Messages */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Messages; sourceTree = "<group>"; };
 		B8B5BB7C2BFD0F7B008DE18F /* swiftgen.config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = swiftgen.config.yml; sourceTree = "<group>"; };
 		B8B5BB7D2BFD0F7B008DE18F /* template.stencil */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = template.stencil; sourceTree = "<group>"; };
 		B8B5BB962BFDF4E7008DE18F /* local_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local_config.json; sourceTree = "<group>"; };
 		B8D17C232C09135F005FFBC7 /* BaseUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BaseUI; sourceTree = "<group>"; };
 		B8D17C242C09135F005FFBC7 /* CommonLogic */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = CommonLogic; sourceTree = "<group>"; };
-		B8D17C252C09135F005FFBC7 /* Design */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Design; sourceTree = "<group>"; };
 		B8D17C262C09135F005FFBC7 /* Onboarding */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Onboarding; sourceTree = "<group>"; };
 		B8FE847C2BFE5FB8005334B3 /* webrtcProjectRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = webrtcProjectRelease.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -95,13 +94,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B812735D2C09213A0027D6A6 /* Design in Frameworks */,
 				B875CC872C16248D008F12B8 /* Settings in Frameworks */,
 				B80B0C762BFCCF80004860A3 /* XCoordinatorCombine in Frameworks */,
 				B81F9EBB2BFCAF8300FB910A /* FirebaseStorageCombine-Community in Frameworks */,
 				B81F9EAD2BFCAF8300FB910A /* FirebaseDatabaseSwift in Frameworks */,
+				B8B203122C53E63B00819281 /* Messages in Frameworks */,
 				B81F9EAB2BFCAF8300FB910A /* FirebaseDatabase in Frameworks */,
 				B80B0C782BFCCF80004860A3 /* XCoordinatorRx in Frameworks */,
+				B822B8852C41874D002842D2 /* Contacts in Frameworks */,
 				B875CC852C162489008F12B8 /* Chat in Frameworks */,
 				B81F9EB92BFCAF8300FB910A /* FirebaseStorage in Frameworks */,
 				B8D17C152C09094E005FFBC7 /* BaseUI in Frameworks */,
@@ -114,7 +114,6 @@
 				B81F9EA92BFCAF8300FB910A /* FirebaseAuth in Frameworks */,
 				B80B0C742BFCCF80004860A3 /* XCoordinator in Frameworks */,
 				B81F9EB52BFCAF8300FB910A /* FirebaseRemoteConfig in Frameworks */,
-				B870D7DF2C0D0A9700479083 /* Home in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -231,12 +230,12 @@
 		B8D17C272C09135F005FFBC7 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				B8B203102C537BB600819281 /* Messages */,
+				B822B8832C41873E002842D2 /* Contacts */,
 				B875CC832C162262008F12B8 /* Settings */,
 				B875CC822C16225D008F12B8 /* Chat */,
-				B870D7DD2C0D093400479083 /* Home */,
 				B8D17C232C09135F005FFBC7 /* BaseUI */,
 				B8D17C242C09135F005FFBC7 /* CommonLogic */,
-				B8D17C252C09135F005FFBC7 /* Design */,
 				B8D17C262C09135F005FFBC7 /* Onboarding */,
 			);
 			path = Modules;
@@ -275,11 +274,11 @@
 				B80B0C772BFCCF80004860A3 /* XCoordinatorRx */,
 				B8D17C142C09094E005FFBC7 /* BaseUI */,
 				B812735A2C0921360027D6A6 /* CommonLogic */,
-				B812735C2C09213A0027D6A6 /* Design */,
 				B812735E2C09213E0027D6A6 /* Onboarding */,
-				B870D7DE2C0D0A9700479083 /* Home */,
 				B875CC842C162489008F12B8 /* Chat */,
 				B875CC862C16248D008F12B8 /* Settings */,
+				B822B8842C41874D002842D2 /* Contacts */,
+				B8B203112C53E63B00819281 /* Messages */,
 			);
 			productName = webrtcProject;
 			productReference = B852F32A2BF52A670076D3BC /* webrtcProject.app */;
@@ -356,7 +355,6 @@
 				B852F33A2BF52A690076D3BC /* Base in Resources */,
 				B8B5BB7F2BFD0F7B008DE18F /* template.stencil in Resources */,
 				B852F3352BF52A670076D3BC /* Base in Resources */,
-				B8D17C2A2C09135F005FFBC7 /* Design in Resources */,
 				B8D17C2B2C09135F005FFBC7 /* Onboarding in Resources */,
 				B8B5BB972BFDF4E7008DE18F /* local_config.json in Resources */,
 				B8B5BB7E2BFD0F7B008DE18F /* swiftgen.config.yml in Resources */,
@@ -859,10 +857,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = CommonLogic;
 		};
-		B812735C2C09213A0027D6A6 /* Design */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Design;
-		};
 		B812735E2C09213E0027D6A6 /* Onboarding */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Onboarding;
@@ -917,9 +911,9 @@
 			package = B81F9EA72BFCAF8300FB910A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = "FirebaseStorageCombine-Community";
 		};
-		B870D7DE2C0D0A9700479083 /* Home */ = {
+		B822B8842C41874D002842D2 /* Contacts */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = Home;
+			productName = Contacts;
 		};
 		B875CC842C162489008F12B8 /* Chat */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -928,6 +922,10 @@
 		B875CC862C16248D008F12B8 /* Settings */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Settings;
+		};
+		B8B203112C53E63B00819281 /* Messages */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Messages;
 		};
 		B8D17C142C09094E005FFBC7 /* BaseUI */ = {
 			isa = XCSwiftPackageProductDependency;

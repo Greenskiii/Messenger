@@ -29,9 +29,12 @@ public enum Asset {
     public static let tabBarTint = ColorAsset(name: "tabBarTint")
     public static let backButton = ColorAsset(name: "backButton")
     public static let background = ColorAsset(name: "background")
+    public static let blueIcon = ColorAsset(name: "blueIcon")
     public static let button = ColorAsset(name: "button")
+    public static let disabled = ColorAsset(name: "disabled")
     public static let neutralLine = ColorAsset(name: "neutralLine")
     public static let offWhite = ColorAsset(name: "offWhite")
+    public static let searchBackground = ColorAsset(name: "searchBackground")
     public static let secondaryBackground = ColorAsset(name: "secondaryBackground")
     public static let secondaryText = ColorAsset(name: "secondaryText")
     public static let textField = ColorAsset(name: "textField")
@@ -39,7 +42,9 @@ public enum Asset {
   public enum Icons {
     public static let chatsIcon = ImageAsset(name: "ChatsIcon")
     public static let contactsIcon = ImageAsset(name: "ContactsIcon")
+    public static let magnifying = ImageAsset(name: "Magnifying")
     public static let moreIcon = ImageAsset(name: "MoreIcon")
+    public static let plus = ImageAsset(name: "Plus")
     public static let profileImage = ImageAsset(name: "ProfileImage")
     public static let splashImage = ImageAsset(name: "SplashImage")
   }

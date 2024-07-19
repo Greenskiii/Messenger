@@ -6,7 +6,7 @@
 //
 
 import XCoordinator
-import Home
+import Contacts
 import Chat
 import Settings
 import CommonLogic
@@ -24,11 +24,11 @@ final class MainTabBarCoordinator: TabBarCoordinator<TabBarRoute> {
     private let profileManager: ProfileManagerProtocol
     private let nextRouteHandler: (TabBarRoute) -> Void
 
-    private lazy var homeCoordinator: HomeCoordinator = {
-        return HomeCoordinator { [weak self] route in
+    private lazy var contactsFlowCoordinator: ContactsFlowCoordinator = {
+        return ContactsFlowCoordinator(profileManager: profileManager) { [weak self] route in
             switch route {
-            case .openPhoneNumber:
-                self?.trigger(.home)
+            default:
+                break
             }
         }
     }()
@@ -57,7 +57,7 @@ final class MainTabBarCoordinator: TabBarCoordinator<TabBarRoute> {
     ) {
         self.profileManager = profileManager
         self.nextRouteHandler = nextRouteHandler
-        let tabBarController = TabBarController()
+        let tabBarController = TabBarController(tabs: Tab.allCases)
         super.init(rootViewController: tabBarController, initialRoute: .setTabs)
     }
 
@@ -92,7 +92,7 @@ final class MainTabBarCoordinator: TabBarCoordinator<TabBarRoute> {
     private func coordinator(for tab: Tab) -> Presentable {
         switch tab {
         case .home:
-            return homeCoordinator
+            return contactsFlowCoordinator
         case .settings:
             return settingsCoordinator
         case .chats:
@@ -125,11 +125,11 @@ extension Tab {
     var title: String {
         switch self {
         case .home:
-            "Contacts"
+            "Contacts\n•"
         case .settings:
-            "More"
+            "More\n•"
         case .chats:
-            "Chats"
+            "Chats\n•"
         }
     }
 }

@@ -5,4 +5,8 @@
 //  Created by Алексей Даневич on 28.06.2024.
 //
 
-import Foundation
+import UIKit
+
+final class DebugButtonViewController: UIViewController {
+    
+}

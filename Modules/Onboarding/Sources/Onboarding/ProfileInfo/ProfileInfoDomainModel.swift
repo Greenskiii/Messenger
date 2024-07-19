@@ -38,7 +38,7 @@ final class ProfileInfoDomainModel {
     }
 
     private func saveUserInfo(_ name: String, imageData: Data? = nil) {
-        profileManager.updateUserInfo(image: imageData, name: name)
+        profileManager.registerUser(name: name, image: imageData)
             .sink { [weak self] _ in
                 self?.error = .saveUserInfo
             } receiveValue: { [weak self] _ in

@@ -6,12 +6,13 @@
 //
 
 import FirebaseAuth
+import Combine
 
 public protocol AuthProviderProtocol {
     var currentUser: FirebaseAuth.User? { get }
     var languageCode: String? { get set }
     func signIn(with credential: AuthCredential, completion: @escaping (AuthDataResult?, Error?) -> Void)
-    func convertUser(_ user: FirebaseAuth.User?) -> User?
+    func signOut() -> AnyPublisher<Void, Error>
 }
 
 public class FirebaseAuthProvider: AuthProviderProtocol {
@@ -30,15 +31,14 @@ public class FirebaseAuthProvider: AuthProviderProtocol {
         Auth.auth().signIn(with: credential, completion: completion)
     }
 
-    public func convertUser(_ user: FirebaseAuth.User?) -> User? {
-        guard let user else {
-            return nil
-        }
-        return User(
-            name: user.displayName,
-            imageURL: user.photoURL,
-            phoneNumber: user.phoneNumber,
-            id: user.uid
-        )
+    public func signOut() -> AnyPublisher<Void, Error> {
+        return Future<Void, Error> { promise in
+            do {
+                try Auth.auth().signOut()
+                promise(.success(()))
+            } catch {
+                promise(.failure(NetworkError.urlFailure))
+            }
+        }.eraseToAnyPublisher()
     }
 }

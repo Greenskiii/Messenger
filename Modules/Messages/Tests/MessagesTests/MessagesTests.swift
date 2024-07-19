@@ -1,14 +1,7 @@
-//
-//  HomeDomainModelTests.swift
-//  webrtcProject
-//
-//  Created by Алексей Даневич on 21.05.2024.
-//
-
 import XCTest
-@testable import Home
+@testable import Messages
 
-final class HomeTests: XCTestCase {
+final class MessagesTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest
